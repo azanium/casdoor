@@ -3,7 +3,7 @@ name: Build
 on: [push, pull_request]
 
 jobs:
-frontend:
+  frontend:
     name: Front-end
     runs-on: ubuntu-latest
     needs: [ go-tests ]
