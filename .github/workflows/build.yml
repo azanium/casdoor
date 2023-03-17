@@ -28,6 +28,7 @@ jobs:
           port: 22
           local: ./web/build
           remote: /usr/local/casdoor/web/build
+  
   # linter:
   #   name: Go-Linter
   #   runs-on: ubuntu-latest
@@ -63,16 +64,16 @@ jobs:
           sh ./build.sh
         working-directory: ./
 
-    - name: systemd stop
-      uses: appleboy/ssh-action@v0.1.8
-      with:
-        host: hls.iou.edu.gm
-        username: root
-        key: ${{ secrets.SSH_KEY }}
-        port: 22
-        script: |
-          sudo systemctl disable casdoor
-          sudo systemctl stop casdoor
+      - name: systemd stop
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: hls.iou.edu.gm
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            sudo systemctl disable casdoor
+            sudo systemctl stop casdoor
     
       - name: Copy binary
         uses: appleboy/scp-action@master
