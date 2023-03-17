@@ -93,7 +93,7 @@ jobs:
           username: root
           privateKey: ${{ secrets.SSH_KEY }}
           port: 22
-          local: ./conf/app.conf
+          local: ./conf/app_prod.conf
           remote: /usr/local/casdoor/conf/app.conf
 
       - name: Copy systemd
