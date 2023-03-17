@@ -113,14 +113,14 @@ jobs:
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
-        if: github.repository == 'azanium/casdoor' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
+        if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push to Docker Hub
         uses: docker/build-push-action@v3
-        if: github.repository == 'azanium/casdoor' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
+        if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
         with:
           target: STANDARD
           platforms: linux/amd64,linux/arm64
@@ -129,7 +129,7 @@ jobs:
 
       - name: Push All In One Version to Docker Hub
         uses: docker/build-push-action@v3
-        if: github.repository == 'azanium/casdoor' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
+        if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
         with:
           target: ALLINONE
           platforms: linux/amd64,linux/arm64
