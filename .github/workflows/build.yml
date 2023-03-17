@@ -52,89 +52,99 @@ jobs:
         run: |
           go build -race -ldflags "-extldflags '-static'"
         working-directory: ./
-  
-  release-and-push:
-    name: Release And Push
-    runs-on: ubuntu-latest
-    if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
-    needs: [ frontend, backend, linter ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Copy binary
+        uses: appleboy/scp-action@master
         with:
-          fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
+          host: hls.iou.edu.gm
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: ./casdoor
+          target: /usr/local/casdoor/bin
+          overwrite: true
+      
+  # release-and-push:
+  #   name: Release And Push
+  #   runs-on: ubuntu-latest
+  #   if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
+  #   needs: [ frontend, backend, linter ]
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16
 
-      - name: Fetch Previous version
-        id: get-previous-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
+  #     - name: Fetch Previous version
+  #       id: get-previous-tag
+  #       uses: actions-ecosystem/action-get-latest-tag@v1.6.0
 
-      - name: Release
-        run: yarn global add semantic-release@17.4.4 && semantic-release
-        env:
-          GH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+  #     - name: Release
+  #       run: yarn global add semantic-release@17.4.4 && semantic-release
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
 
-      - name: Fetch Current version
-        id: get-current-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
+  #     - name: Fetch Current version
+  #       id: get-current-tag
+  #       uses: actions-ecosystem/action-get-latest-tag@v1.6.0
 
-      # - name: Decide Should_Push Or Not
-      #   id: should_push
-      #   run: |
-      #     old_version=${{steps.get-previous-tag.outputs.tag}}
-      #     new_version=${{steps.get-current-tag.outputs.tag }}
+  #     # - name: Decide Should_Push Or Not
+  #     #   id: should_push
+  #     #   run: |
+  #     #     old_version=${{steps.get-previous-tag.outputs.tag}}
+  #     #     new_version=${{steps.get-current-tag.outputs.tag }}
 
-      #     old_array=(${old_version//\./ })
-      #     new_array=(${new_version//\./ })
+  #     #     old_array=(${old_version//\./ })
+  #     #     new_array=(${new_version//\./ })
 
-      #     if [ ${old_array[0]} != ${new_array[0]} ]
-      #     then 
-      #         echo ::set-output name=push::'true'
-      #     elif [ ${old_array[1]} != ${new_array[1]} ]
-      #     then 
-      #         echo ::set-output name=push::'true'
+  #     #     if [ ${old_array[0]} != ${new_array[0]} ]
+  #     #     then 
+  #     #         echo ::set-output name=push::'true'
+  #     #     elif [ ${old_array[1]} != ${new_array[1]} ]
+  #     #     then 
+  #     #         echo ::set-output name=push::'true'
               
-      #     else
-      #         echo ::set-output name=push::'false'
+  #     #     else
+  #     #         echo ::set-output name=push::'false'
               
-      #     fi
+  #     #     fi
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v2
 
-      - name: Set up buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          version: latest
+  #     - name: Set up buildx
+  #       id: buildx
+  #       uses: docker/setup-buildx-action@v2
+  #       with:
+  #         version: latest
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  #     - name: Log in to Docker Hub
+  #       uses: docker/login-action@v1
+  #       if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Push to Docker Hub
-        uses: docker/build-push-action@v3
-        if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
-        with:
-          target: STANDARD
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: casbin/casdoor:${{steps.get-current-tag.outputs.tag }},casbin/casdoor:latest
+  #     - name: Push to Docker Hub
+  #       uses: docker/build-push-action@v3
+  #       if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
+  #       with:
+  #         target: STANDARD
+  #         platforms: linux/amd64,linux/arm64
+  #         push: true
+  #         tags: casbin/casdoor:${{steps.get-current-tag.outputs.tag }},casbin/casdoor:latest
 
-      - name: Push All In One Version to Docker Hub
-        uses: docker/build-push-action@v3
-        if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
-        with:
-          target: ALLINONE
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: casbin/casdoor-all-in-one:${{steps.get-current-tag.outputs.tag }},casbin/casdoor-all-in-one:latest
+  #     - name: Push All In One Version to Docker Hub
+  #       uses: docker/build-push-action@v3
+  #       if: github.repository == 'azanium/casdoor' && github.event_name == 'push'
+  #       with:
+  #         target: ALLINONE
+  #         platforms: linux/amd64,linux/arm64
+  #         push: true
+  #         tags: casbin/casdoor-all-in-one:${{steps.get-current-tag.outputs.tag }},casbin/casdoor-all-in-one:latest
 
   # go-tests:
   #   name: Running Go tests
