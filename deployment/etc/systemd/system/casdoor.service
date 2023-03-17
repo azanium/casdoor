@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 EnvironmentFile=
-ExecStart=/usr/local/casdoor/bin/casdoor-linux-amd64
+ExecStart=/usr/local/casdoor/bin/casdoor_linux_amd64
 WorkingDirectory=/usr/local/casdoor
 Restart=on-failure
 RestartSec=10
