@@ -103,7 +103,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: ./deployments/etc/systemd/system/casdoor.service
+          source: ./deployment/etc/systemd/system/casdoor.service
           target: /etc/systemd/system/casdoor.service
           debug: true
           overwrite: true
