@@ -106,6 +106,7 @@ jobs:
           source: ./deployment/etc/systemd/system/casdoor.service
           target: /etc/systemd/system/casdoor.service
           debug: true
+          strip_components: 5
           overwrite: true
     
       - name: systemd reload
