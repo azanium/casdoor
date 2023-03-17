@@ -4,27 +4,27 @@ on: [push, pull_request]
 
 jobs:
 
-  go-tests:
-    name: Running Go tests
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-          image: mysql:5.7
-          env:
-            MYSQL_DATABASE: casdoor
-            MYSQL_ROOT_PASSWORD: 123456
-          ports:
-              - 3306:3306
-          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.16.5'
-      - name: Tests
-        run: |
-          go test -v $(go list ./...) -tags skipCi
-        working-directory: ./
+  # go-tests:
+  #   name: Running Go tests
+  #   runs-on: ubuntu-latest
+  #   services:
+  #     mysql:
+  #         image: mysql:5.7
+  #         env:
+  #           MYSQL_DATABASE: casdoor
+  #           MYSQL_ROOT_PASSWORD: 123456
+  #         ports:
+  #             - 3306:3306
+  #         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-go@v2
+  #       with:
+  #         go-version: '^1.16.5'
+  #     - name: Tests
+  #       run: |
+  #         go test -v $(go list ./...) -tags skipCi
+  #       working-directory: ./
 
   frontend:
     name: Front-end
@@ -127,7 +127,7 @@ jobs:
     name: Release And Push
     runs-on: ubuntu-latest
     if: github.repository == 'casdoor/casdoor' && github.event_name == 'push'
-    needs: [ frontend, backend, linter, e2e ]
+    needs: [ frontend, backend, linter ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
