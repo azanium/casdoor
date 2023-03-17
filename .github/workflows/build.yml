@@ -82,8 +82,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           source: ./deployments/etc/systemd/system/casdoor.service
-          target: /etc/systemd/system
-          strip_components: 4
+          target: /etc/systemd/system/casdoor.service
+          # strip_components: 4
           debug: true
           overwrite: true
     
