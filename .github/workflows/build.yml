@@ -19,6 +19,15 @@ jobs:
       - run: yarn install && CI=false yarn run build
         working-directory: ./web
 
+      - name: Copy web
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          host: hls.iou.edu.gm
+          username: root
+          privateKey: ${{ secrets.SSH_KEY }}
+          port: 22
+          local: ./web/build
+          remote: /usr/local/casdoor/web/build
   # linter:
   #   name: Go-Linter
   #   runs-on: ubuntu-latest
