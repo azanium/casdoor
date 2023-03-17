@@ -49,8 +49,9 @@ jobs:
           go-version: '^1.16.5'
       - run: go version
       - name: Build
+        # go build -race -ldflags "-extldflags '-static'"
         run: |
-          go build -race -ldflags "-extldflags '-static'"
+          go build  
         working-directory: ./
       - name: Copy binary
         uses: appleboy/scp-action@master
