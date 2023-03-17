@@ -72,8 +72,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            sudo systemctl disable casdoor
-            sudo systemctl stop casdoor
+            test -f /etc/systemd/system/casdoor.service && systemctl disable casdoor || echo "casdoor not installed"
+            test -f /etc/systemd/system/casdoor.service && systemctl stop casdoor || echo "casdoor not found"
     
       - name: Copy binary
         uses: appleboy/scp-action@master
